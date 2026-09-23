@@ -56,74 +56,100 @@
 @endsection
 
 @section('content')
-    <section class="mb-4 pt-3">
+    {{-- Loaded here (not in <head>) so it cascades after aiz-core.css --}}
+    <link rel="stylesheet" href="{{ static_asset('assets/css/product-details.css') }}?v={{ @filemtime(public_path('assets/css/product-details.css')) }}">
+
+    <div class="pd-page">
         <div class="container">
-            <div class="bg-white py-3">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb">
+                <ol class="pd-breadcrumb">
+                    <li><a href="{{ route('home') }}">{{ translate('Home') }}</a></li>
+                    @if ($detailedProduct->main_category)
+                        <li class="pd-crumb-sep"><i class="las la-angle-right"></i></li>
+                        <li><a href="{{ route('products.category', $detailedProduct->main_category->slug) }}">{{ $detailedProduct->main_category->getTranslation('name') }}</a></li>
+                    @endif
+                    <li class="pd-crumb-sep"><i class="las la-angle-right"></i></li>
+                    <li class="pd-crumb-current" aria-current="page">{{ $detailedProduct->getTranslation('name') }}</li>
+                </ol>
+            </nav>
+
+            <!-- Gallery + buy box -->
+            <section class="pd-hero">
                 <div class="row">
-                    <!-- Product Image Gallery -->
-                    <div class="col-xl-5 col-lg-6 mb-4">
+                    <div class="col-lg-6 col-xl-5 mb-lg-0">
                         @include('frontend.product_details.image_gallery')
                     </div>
-
-                    <!-- Product Details -->
-                    <div class="col-xl-7 col-lg-6">
+                    <div class="col-lg-6 col-xl-7">
                         @include('frontend.product_details.details')
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
+            </section>
 
-    <section class="mb-4">
-        <div class="container">
-            @if ($detailedProduct->auction_product)
-                <!-- Reviews & Ratings -->
-                @include('frontend.product_details.review_section')
-                
-                <!-- Description, Video, Downloads -->
-                @include('frontend.product_details.description')
-                
-                <!-- Product Query -->
-                @include('frontend.product_details.product_queries')
-            @else
-                <div class="row gutters-16">
-                    <!-- Left side -->
-                    <div class="col-lg-3">
-                        <!-- Seller Info -->
-                        @include('frontend.product_details.seller_info')
+            <!-- Description, reviews, seller, related -->
+            <section class="pd-lower">
+                @if ($detailedProduct->auction_product)
+                    @include('frontend.product_details.description')
+                    <div id="pd-reviews">@include('frontend.product_details.review_section')</div>
+                    @include('frontend.product_details.product_queries')
+                @else
+                    <div class="row gutters-16">
+                        <div class="col-lg-9 order-lg-2">
+                            @include('frontend.product_details.description')
 
-                        <!-- Top Selling Products -->
-                       <div class="d-none d-lg-block">
-                            @include('frontend.product_details.top_selling_products')
-                       </div>
-                    </div>
+                            @include('frontend.product_details.frequently_bought_products')
 
-                    <!-- Right side -->
-                    <div class="col-lg-9">
-                        
-                        <!-- Reviews & Ratings -->
-                        @include('frontend.product_details.review_section')
+                            <div id="pd-reviews">@include('frontend.product_details.review_section')</div>
 
-                        <!-- Description, Video, Downloads -->
-                        @include('frontend.product_details.description')
-                        
-                        <!-- Frequently Bought products -->
-                        @include('frontend.product_details.frequently_bought_products')
-
-                        <!-- Product Query -->
-                        @include('frontend.product_details.product_queries')
-                        
-                        <!-- Top Selling Products -->
-                        <div class="d-lg-none">
-                             @include('frontend.product_details.top_selling_products')
+                            @include('frontend.product_details.product_queries')
                         </div>
 
+                        <div class="col-lg-3 order-lg-1">
+                            @include('frontend.product_details.seller_info')
+                            @include('frontend.product_details.top_selling_products')
+                        </div>
                     </div>
-                </div>
+                @endif
+            </section>
+        </div>
+    </div>
+
+    <!-- Sticky mobile buy bar (hidden on desktop via CSS) -->
+    @if (!$detailedProduct->auction_product)
+        @php
+            $pd_bar_external =
+                $detailedProduct->digital == 0 && (
+                    ((get_setting('product_external_link_for_seller') == 1) && ($detailedProduct->added_by == 'seller') && ($detailedProduct->external_link != null)) ||
+                    (($detailedProduct->added_by != 'seller') && ($detailedProduct->external_link != null))
+                );
+            $pd_bar_can_checkout = Auth::check() || get_setting('guest_checkout_activation') == 1;
+        @endphp
+        <div class="pd-sticky-cta" id="pd-sticky-cta">
+            <div class="pd-sticky-price">
+                <small>{{ translate('Price') }}</small>
+                <strong id="pd-sticky-price">{{ home_discounted_price($detailedProduct) }}</strong>
+            </div>
+            @if ($pd_bar_external)
+                <a class="btn pd-btn pd-btn-primary buy-now" href="{{ $detailedProduct->external_link }}">
+                    <i class="la la-share"></i> {{ translate($detailedProduct->external_link_btn) }}
+                </a>
+            @else
+                <button type="button" class="btn pd-btn pd-btn-outline add-to-cart"
+                    onclick="{{ $pd_bar_can_checkout ? 'addToCart()' : 'showLoginModal()' }}">
+                    <i class="las la-shopping-bag"></i> {{ translate('Add to cart') }}
+                </button>
+                <button type="button" class="btn pd-btn pd-btn-primary buy-now"
+                    onclick="{{ $pd_bar_can_checkout ? 'buyNow()' : 'showLoginModal()' }}">
+                    {{ translate('Buy Now') }}
+                </button>
+                @if ($detailedProduct->digital == 0)
+                    <button type="button" class="btn pd-btn pd-btn-disabled out-of-stock d-none" disabled>
+                        {{ translate('Out of Stock') }}
+                    </button>
+                @endif
             @endif
         </div>
-    </section>
-
+    @endif
 @endsection
 
 @section('modal')
@@ -274,6 +300,62 @@
         $(document).ready(function() {
             getVariantPrice();
         });
+
+        // Smooth-scroll for in-page anchors (e.g. rating -> reviews)
+        $(document).on('click', '[data-pd-scroll]', function(e) {
+            var target = document.querySelector($(this).attr('href'));
+            if (target) {
+                e.preventDefault();
+                var top = target.getBoundingClientRect().top + window.pageYOffset - 80;
+                window.scrollTo({ top: top, behavior: 'smooth' });
+            }
+        });
+
+        // Reflect chosen option value in the "Selected: x" label
+        $(document).on('change', '#option-choice-form input[type=radio]', function() {
+            var name = $(this).attr('name');
+            var label = document.querySelector('[data-pd-selected="' + name + '"]');
+            if (label) {
+                var title = $(this).closest('.aiz-megabox').data('title');
+                label.textContent = title ? title : $(this).val();
+            }
+        });
+
+        // Keep the sticky mobile bar's price in sync with the variant price
+        (function() {
+            var stickyPrice = document.getElementById('pd-sticky-price');
+            var chosen = document.getElementById('chosen_price');
+            if (stickyPrice && chosen) {
+                new MutationObserver(function() {
+                    var t = chosen.textContent.trim();
+                    if (t) stickyPrice.textContent = t;
+                }).observe(chosen, { childList: true, characterData: true, subtree: true });
+            }
+
+            // Hide the sticky bar while scrolling up (reveals the top of the page),
+            // show it while reading down the page.
+            var bar = document.getElementById('pd-sticky-cta');
+            if (bar) {
+                var lastY = window.pageYOffset;
+                var ticking = false;
+                window.addEventListener('scroll', function() {
+                    if (!ticking) {
+                        window.requestAnimationFrame(function() {
+                            var y = window.pageYOffset;
+                            if (y < 300) {
+                                bar.classList.add('is-hidden');
+                            } else {
+                                bar.classList.remove('is-hidden');
+                            }
+                            lastY = y;
+                            ticking = false;
+                        });
+                        ticking = true;
+                    }
+                }, { passive: true });
+                if (window.pageYOffset < 300) bar.classList.add('is-hidden');
+            }
+        })();
 
         function CopyToClipboard(e) {
             var url = $(e).data('url');
