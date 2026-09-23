@@ -1,6 +1,7 @@
 @extends('frontend.layouts.app')
 
 @section('content')
+    <link rel="stylesheet" href="{{ static_asset('assets/css/home-classic.css') }}?v={{ @filemtime(public_path('assets/css/home-classic.css')) }}">
     <style>
         @media (max-width: 767px){
             #flash_deal .flash-deals-baner{
@@ -9,6 +10,7 @@
         }
     </style>
     @php $lang = get_system_language()->code;  @endphp
+    <div class="home-classic">
     <!-- Mobile category icon strip -->
     @include('frontend.'.get_setting("homepage_select").'.partials.mobile_category_strip')
 
@@ -692,6 +694,36 @@
             </div>
         </section>
     @endif
+
+    <!-- Why Buy From Us -->
+    <section class="hc-why">
+        <div class="container">
+            <h2 class="hc-why-title">{{ translate('Why Shop With') }} {{ get_setting('website_name') ?? env('APP_NAME') }}?</h2>
+            <div class="hc-why-grid">
+                <div class="hc-why-item">
+                    <span class="hc-why-icon"><i class="las la-gem"></i></span>
+                    <h3 class="hc-why-head">{{ translate('100% Genuine Products') }}</h3>
+                    <p class="hc-why-sub">{{ translate('Authentic products sourced from trusted brands.') }}</p>
+                </div>
+                <div class="hc-why-item">
+                    <span class="hc-why-icon"><i class="las la-shipping-fast"></i></span>
+                    <h3 class="hc-why-head">{{ translate('Fast & Free Delivery') }}</h3>
+                    <p class="hc-why-sub">{{ translate('Quick, reliable shipping right to your doorstep.') }}</p>
+                </div>
+                <div class="hc-why-item">
+                    <span class="hc-why-icon"><i class="las la-undo-alt"></i></span>
+                    <h3 class="hc-why-head">{{ translate('Easy Returns') }}</h3>
+                    <p class="hc-why-sub">{{ translate('Hassle-free returns within the policy window.') }}</p>
+                </div>
+                <div class="hc-why-item">
+                    <span class="hc-why-icon"><i class="las la-headset"></i></span>
+                    <h3 class="hc-why-head">{{ translate('Dedicated Support') }}</h3>
+                    <p class="hc-why-sub">{{ translate('Friendly help whenever you need it.') }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    </div>{{-- /.home-classic --}}
 
 @endsection
 

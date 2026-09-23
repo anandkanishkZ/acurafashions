@@ -1,0 +1,265 @@
+/* =========================================================================
+   Home (classic) — premium, aesthetic redesign
+   Scoped to .home-classic so only the homepage is affected.
+   Restyles existing section markup (no structural rewrites) + a new
+   "Why Shop With Us" trust section. Uses var(--primary) for accents.
+   ========================================================================= */
+
+.home-classic {
+    --hc-text: #111827;
+    --hc-muted: #6b7280;
+    --hc-border: #edeef2;
+    --hc-canvas: #f6f7f9;
+    --hc-radius: 16px;
+    --hc-radius-sm: 12px;
+    --hc-shadow: 0 1px 2px rgba(17, 24, 39, 0.04), 0 10px 30px rgba(17, 24, 39, 0.06);
+    --hc-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    background: var(--hc-canvas);
+    padding-bottom: 8px;
+}
+
+/* Breathing room between sections */
+.home-classic > section,
+.home-classic > div {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+.home-classic section,
+.home-classic #section_featured,
+.home-classic #section_best_selling,
+.home-classic #section_newest,
+.home-classic #section_home_categories,
+.home-classic #todays_deal {
+    padding: 22px 0;
+}
+
+/* ---- Section headings ---- */
+.home-classic h3.fs-16,
+.home-classic h3.fs-md-20 {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.01em;
+    color: var(--hc-text);
+}
+
+.home-classic .animate-underline-primary {
+    color: var(--hc-muted) !important;
+    font-weight: 600 !important;
+}
+
+.home-classic .animate-underline-primary:hover {
+    color: var(--primary) !important;
+}
+
+/* ---- Cards: turn hairline-bordered blocks into soft rounded cards ---- */
+.home-classic section > .container > .bg-white,
+.home-classic section .bg-white.px-3 {
+    background: transparent !important;
+}
+
+/* Featured categories -> clean card grid */
+.home-classic .row.border-top.border-right {
+    border: none !important;
+    gap: 0;
+}
+
+.home-classic .row.border-top.border-right > [class*="col-"] {
+    border: none !important;
+    padding: 10px !important;
+}
+
+.home-classic .row.border-top.border-right > [class*="col-"] > .d-sm-flex {
+    background: #fff;
+    border: 1px solid var(--hc-border);
+    border-radius: var(--hc-radius);
+    padding: 18px;
+    height: 100%;
+    transition: transform 0.2s var(--hc-ease), box-shadow 0.2s ease;
+}
+
+.home-classic .row.border-top.border-right > [class*="col-"] > .d-sm-flex:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--hc-shadow);
+}
+
+/* Product carousels: soft card cells instead of hairline borders */
+.home-classic .aiz-carousel .carousel-box.border-right,
+.home-classic .aiz-carousel .carousel-box.border-left,
+.home-classic .aiz-carousel .carousel-box.border-top,
+.home-classic .aiz-carousel .carousel-box.border-bottom {
+    border-color: var(--hc-border) !important;
+}
+
+.home-classic .hov-animate-outline {
+    border-radius: var(--hc-radius-sm);
+    transition: transform 0.2s var(--hc-ease), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.home-classic .hov-animate-outline:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--hc-shadow);
+    border-color: transparent !important;
+    z-index: 2;
+}
+
+/* Flash sale block */
+.home-classic #flash_deal .flash-deal-item {
+    border-radius: var(--hc-radius-sm);
+}
+
+.home-classic #flash_deal .flash-deal-price .text-primary {
+    color: var(--primary) !important;
+}
+
+/* Banner carousels: rounded corners + subtle shadow */
+.home-classic .carousel-box.hov-scale-img > a,
+.home-classic .carousel-box.hov-scale-img {
+    border-radius: var(--hc-radius);
+    overflow: hidden;
+}
+
+.home-classic .aiz-carousel .carousel-box img {
+    border-radius: inherit;
+}
+
+/* ---- Brands: clean logo wall ---- */
+.home-classic .row[class*="row-cols"].border-top.border-left {
+    border: none !important;
+    gap: 0;
+}
+
+.home-classic .row[class*="row-cols"].border-top.border-left > .col {
+    border: none !important;
+    padding: 8px !important;
+}
+
+.home-classic .row[class*="row-cols"].border-top.border-left > .col > a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: 1px solid var(--hc-border);
+    border-radius: var(--hc-radius-sm);
+    height: 100%;
+    padding: 18px 10px !important;
+    transition: transform 0.2s var(--hc-ease), box-shadow 0.2s ease;
+}
+
+.home-classic .row[class*="row-cols"].border-top.border-left > .col > a:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--hc-shadow);
+}
+
+.home-classic .row[class*="row-cols"].border-top.border-left img {
+    filter: grayscale(1);
+    opacity: 0.75;
+    transition: filter 0.25s ease, opacity 0.25s ease;
+    padding: 6px !important;
+}
+
+.home-classic .row[class*="row-cols"].border-top.border-left > .col > a:hover img {
+    filter: grayscale(0);
+    opacity: 1;
+}
+
+/* ---- Coupon band ---- */
+.home-classic [style*="cupon_background_color"],
+.home-classic [style*="#292933"] {
+    border-radius: var(--hc-radius);
+    margin-left: auto;
+    margin-right: auto;
+    max-width: calc(100% - 24px);
+}
+
+/* =========================================================================
+   Why Shop With Us — trust section
+   ========================================================================= */
+.hc-why {
+    padding: 40px 0 44px !important;
+}
+
+.hc-why-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--hc-text);
+    margin: 0 0 28px;
+}
+
+.hc-why-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.hc-why-item {
+    background: #fff;
+    border: 1px solid var(--hc-border);
+    border-radius: var(--hc-radius);
+    padding: 26px 20px;
+    text-align: center;
+    transition: transform 0.2s var(--hc-ease), box-shadow 0.2s ease;
+}
+
+.hc-why-item:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--hc-shadow);
+}
+
+.hc-why-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    margin-bottom: 14px;
+    font-size: 26px;
+    color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 10%, #fff);
+}
+
+.hc-why-head {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--hc-text);
+    margin: 0 0 6px;
+}
+
+.hc-why-sub {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--hc-muted);
+    margin: 0;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 991.98px) {
+    .hc-why-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 575.98px) {
+    .home-classic h3.fs-16,
+    .home-classic h3.fs-md-20 {
+        font-size: 17px !important;
+    }
+
+    .hc-why {
+        padding: 28px 0 !important;
+    }
+
+    .hc-why-title {
+        font-size: 20px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .home-classic * {
+        transition: none !important;
+    }
+}
