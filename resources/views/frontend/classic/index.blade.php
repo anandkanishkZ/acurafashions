@@ -9,6 +9,9 @@
         }
     </style>
     @php $lang = get_system_language()->code;  @endphp
+    <!-- Mobile category icon strip -->
+    @include('frontend.'.get_setting("homepage_select").'.partials.mobile_category_strip')
+
     <!-- Sliders -->
     <div class="home-banner-area mb-3" style="">
         <div class="container">
