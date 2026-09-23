@@ -60,29 +60,45 @@ class HomeController extends Controller
         return view('frontend.' . get_setting('homepage_select') . '.index', compact('featured_categories', 'lang'));
     }
 
+    /**
+     * Cache key that varies by homepage template, language and currency so
+     * cached section HTML is never served to the wrong locale/currency.
+     */
+    private function homeSectionCacheKey($section)
+    {
+        $lang = get_system_language() ? get_system_language()->code : 'en';
+        $currency = \Illuminate\Support\Facades\Session::get('currency_code', get_setting('system_default_currency'));
+        return 'home_section_' . $section . '_' . get_setting('homepage_select') . '_' . $lang . '_' . $currency;
+    }
+
     public function load_todays_deal_section()
     {
-        $todays_deal_products = filter_products(Product::where('todays_deal', '1'))->orderBy('id', 'desc')->get();
-        return view('frontend.' . get_setting('homepage_select') . '.partials.todays_deal', compact('todays_deal_products'));
+        return Cache::remember($this->homeSectionCacheKey('todays_deal'), 900, function () {
+            $todays_deal_products = filter_products(Product::where('todays_deal', '1'))->orderBy('id', 'desc')->get();
+            return view('frontend.' . get_setting('homepage_select') . '.partials.todays_deal', compact('todays_deal_products'))->render();
+        });
     }
 
     public function load_newest_product_section()
     {
-        $newest_products = Cache::remember('newest_products', 3600, function () {
-            return filter_products(Product::latest())->limit(12)->get();
+        return Cache::remember($this->homeSectionCacheKey('newest'), 900, function () {
+            $newest_products = filter_products(Product::latest())->limit(12)->get();
+            return view('frontend.' . get_setting('homepage_select') . '.partials.newest_products_section', compact('newest_products'))->render();
         });
-
-        return view('frontend.' . get_setting('homepage_select') . '.partials.newest_products_section', compact('newest_products'));
     }
 
     public function load_featured_section()
     {
-        return view('frontend.' . get_setting('homepage_select') . '.partials.featured_products_section');
+        return Cache::remember($this->homeSectionCacheKey('featured'), 900, function () {
+            return view('frontend.' . get_setting('homepage_select') . '.partials.featured_products_section')->render();
+        });
     }
 
     public function load_best_selling_section()
     {
-        return view('frontend.' . get_setting('homepage_select') . '.partials.best_selling_section');
+        return Cache::remember($this->homeSectionCacheKey('best_selling'), 900, function () {
+            return view('frontend.' . get_setting('homepage_select') . '.partials.best_selling_section')->render();
+        });
     }
 
     public function load_auction_products_section()
@@ -96,7 +112,9 @@ class HomeController extends Controller
 
     public function load_home_categories_section()
     {
-        return view('frontend.' . get_setting('homepage_select') . '.partials.home_categories_section');
+        return Cache::remember($this->homeSectionCacheKey('home_categories'), 900, function () {
+            return view('frontend.' . get_setting('homepage_select') . '.partials.home_categories_section')->render();
+        });
     }
 
     public function load_best_sellers_section()

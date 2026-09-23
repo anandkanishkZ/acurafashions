@@ -435,39 +435,49 @@
     <script>
         @if (Route::currentRouteName() == 'home' || Route::currentRouteName() == '/')
 
+            // Initialise carousels at most once per animation frame, no matter how
+            // many home sections finish loading — avoids 7 full-DOM slick re-scans.
+            var _homeSlickTimer = null;
+            function initHomeCarousels() {
+                if (_homeSlickTimer) clearTimeout(_homeSlickTimer);
+                _homeSlickTimer = setTimeout(function() {
+                    initHomeCarousels();
+                }, 120);
+            }
+
             $.post('{{ route('home.section.featured') }}', {
                 _token: '{{ csrf_token() }}'
             }, function(data) {
                 $('#section_featured').html(data);
-                AIZ.plugins.slickCarousel();
+                initHomeCarousels();
             });
 
             $.post('{{ route('home.section.todays_deal') }}', {
                 _token: '{{ csrf_token() }}'
             }, function(data) {
                 $('#todays_deal').html(data);
-                AIZ.plugins.slickCarousel();
+                initHomeCarousels();
             });
 
             $.post('{{ route('home.section.best_selling') }}', {
                 _token: '{{ csrf_token() }}'
             }, function(data) {
                 $('#section_best_selling').html(data);
-                AIZ.plugins.slickCarousel();
+                initHomeCarousels();
             });
 
             $.post('{{ route('home.section.newest_products') }}', {
                 _token: '{{ csrf_token() }}'
             }, function(data) {
                 $('#section_newest').html(data);
-                AIZ.plugins.slickCarousel();
+                initHomeCarousels();
             });
 
             $.post('{{ route('home.section.auction_products') }}', {
                 _token: '{{ csrf_token() }}'
             }, function(data) {
                 $('#auction_products').html(data);
-                AIZ.plugins.slickCarousel();
+                initHomeCarousels();
             });
 
             var isPreorderEnabled = @json(addon_is_activated('preorder'));
@@ -477,7 +487,7 @@
                     _token: '{{ csrf_token() }}'
                 }, function(data) {
                     $('#section_featured_preorder_products').html(data);
-                    AIZ.plugins.slickCarousel();
+                    initHomeCarousels();
                 });
             }
 
@@ -485,7 +495,7 @@
                 _token: '{{ csrf_token() }}'
             }, function(data) {
                 $('#section_home_categories').html(data);
-                AIZ.plugins.slickCarousel();
+                initHomeCarousels();
             });
 
         @endif
