@@ -1,0 +1,46 @@
+# Environment
+.env
+.env.*.php
+.env.php
+
+# Dependencies (installed by CI/CD via composer install)
+/vendor
+/node_modules
+
+# User-uploaded content (persists on server, never overwritten by deploys)
+/public/uploads
+/public/storage
+
+# Laravel runtime/cache (regenerated on deploy)
+/bootstrap/cache/*.php
+/storage/*.key
+/storage/debugbar
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*
+/storage/logs/*.log
+!/storage/framework/cache/.gitkeep
+!/storage/framework/sessions/.gitkeep
+!/storage/framework/testing/.gitkeep
+!/storage/framework/views/.gitkeep
+!/storage/logs/.gitkeep
+
+# IDE / OS
+.idea/
+.vscode/
+.vagrant/
+.DS_Store
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+/nbproject
+/nbproject/private/
+
+# Local packaging artifacts, not source
+updates.zip
+ecommerce.zip
+install.zip
+public/uploads.zip
+temp/
