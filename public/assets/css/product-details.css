@@ -22,6 +22,14 @@
     background: var(--pd-canvas);
     color: var(--pd-text);
     padding-bottom: 32px;
+    overflow-x: clip; /* safety net: never let this page scroll sideways */
+}
+
+/* Guard: nothing inside the product page may exceed its width */
+.pd-page img,
+.pd-page svg,
+.pd-page table {
+    max-width: 100%;
 }
 
 /* ---------- Breadcrumb ---------- */
@@ -793,12 +801,25 @@
     font-size: 15px;
     line-height: 1.75;
     color: #374151;
+    overflow-x: auto;          /* wide tables scroll inside the card, not the page */
+    -webkit-overflow-scrolling: touch;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
-.pd-lower .aiz-editor-data img {
+.pd-lower .aiz-editor-data img,
+.pd-lower .aiz-editor-data video,
+.pd-lower .aiz-editor-data iframe {
     max-width: 100%;
     height: auto;
     border-radius: var(--pd-radius-sm);
+}
+
+/* Any fixed-width markup pasted into a description can't blow out the layout */
+.pd-lower .aiz-editor-data table {
+    max-width: 100%;
+    display: block;
+    overflow-x: auto;
 }
 
 /* Reviews summary */
@@ -914,7 +935,7 @@
         padding: 0 0 20px;
         border-radius: 0;
         box-shadow: none;
-        margin: 0 -15px;
+        margin: 0;
     }
 
     .pd-gallery {
