@@ -404,7 +404,14 @@
         @endif
         <div class="pd-fact">
             <span class="pd-fact-key">{{ translate('Share') }}</span>
-            <span class="pd-fact-val pd-share"><span class="aiz-share"></span></span>
+            <span class="pd-fact-val pd-share">
+                <span class="aiz-share"></span>
+                <button type="button" class="pd-copy-link" onclick="CopyToClipboard(this)"
+                    data-url="{{ route('product', $detailedProduct->slug) }}"
+                    aria-label="{{ translate('Copy link') }}" title="{{ translate('Copy link') }}">
+                    <i class="las la-link"></i>
+                </button>
+            </span>
         </div>
     </div>
 </div>
