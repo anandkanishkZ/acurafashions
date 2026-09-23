@@ -408,7 +408,7 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                                 '<img src="' +
                                 AIZ.data.fileBaseUrl +
                                 data[i].file_name +
-                                '" class="img-fit">';
+                                '" class="img-fit" loading="lazy" decoding="async" width="180" height="180">';
                         } else {
                             thumb = '<i class="la la-file-text"></i>';
                         }
