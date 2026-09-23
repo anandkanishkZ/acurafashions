@@ -263,3 +263,201 @@
         max-width: min(320px, 85vw) !important;
     }
 }
+
+/* =========================================================================
+   Footer — minimal, modern, premium restyle
+   Restyles the existing footer markup (no structural changes) into a
+   refined dark footer. Uses var(--primary) for brand accents.
+   ========================================================================= */
+
+:root {
+    --ft-bg: #0f1115;
+    --ft-bg-2: #14171d;
+    --ft-border: rgba(255, 255, 255, 0.08);
+    --ft-text: #c4c8d2;
+    --ft-muted: #7b8190;
+    --ft-heading: #f4f5f7;
+}
+
+/* Policy cards row -> clean icon tiles */
+.policy-file > a {
+    border: none !important;
+    background: var(--ft-bg-2);
+    border-radius: 14px;
+    margin: 6px;
+    padding: 26px 16px !important;
+    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.policy-file > a:hover {
+    transform: translateY(-3px);
+    background: #191d25;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18);
+}
+
+.policy-file svg path,
+.policy-file svg rect {
+    transition: fill 0.2s ease;
+}
+
+.policy-file > a:hover svg path,
+.policy-file > a:hover svg rect {
+    fill: var(--primary) !important;
+}
+
+.policy-file h4 {
+    letter-spacing: 0.01em;
+}
+
+.row.no-gutters.border-left.border-soft-light {
+    border: none !important;
+    padding: 8px 0;
+}
+
+/* Section with policy tiles gets a light canvas */
+section.bg-light.border-top.mt-auto {
+    background: #f6f7f9 !important;
+    border: none !important;
+}
+
+/* Main footer widget sections -> deep, refined dark */
+.footer-widget {
+    background: var(--ft-bg) !important;
+    border-color: var(--ft-border) !important;
+    color: var(--ft-text) !important;
+}
+
+.footer-widget h4,
+.footer-widget h5 {
+    color: var(--ft-muted) !important;
+    letter-spacing: 0.08em;
+    font-size: 12px !important;
+}
+
+.footer-widget .text-soft-light,
+.footer-widget a.text-soft-light {
+    color: var(--ft-text) !important;
+    transition: color 0.18s ease;
+}
+
+.footer-widget a.text-soft-light:hover {
+    color: var(--ft-heading) !important;
+}
+
+.footer-widget .text-secondary {
+    color: var(--ft-muted) !important;
+}
+
+/* Brand wordmark fallback */
+.footer-brand .footer-wordmark {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    color: var(--ft-heading);
+}
+
+/* About text */
+.footer-widget .text-secondary.text-justify {
+    color: var(--ft-text) !important;
+    text-align: left !important;
+    font-size: 13.5px;
+    line-height: 1.7;
+    max-width: 460px;
+}
+
+/* Newsletter input + button */
+.footer-widget input.form-control {
+    border-radius: 10px !important;
+    height: 46px;
+    border: 1px solid var(--ft-border) !important;
+    background: var(--ft-bg-2) !important;
+    color: #fff !important;
+    padding-left: 16px;
+}
+
+.footer-widget input.form-control::placeholder {
+    color: var(--ft-muted);
+}
+
+.footer-widget input.form-control:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 22%, transparent);
+}
+
+.footer-widget .btn-primary {
+    border-radius: 10px !important;
+    height: 46px;
+    font-weight: 700;
+    background: var(--primary) !important;
+    border: none !important;
+}
+
+/* Social icons -> round modern buttons */
+.footer-widget ul.social.colored {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-left: 0;
+}
+
+.footer-widget ul.social.colored li {
+    margin: 0 !important;
+}
+
+.footer-widget ul.social.colored li a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--ft-bg-2);
+    border: 1px solid var(--ft-border);
+    color: var(--ft-text);
+    font-size: 16px;
+    transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.footer-widget ul.social.colored li a:hover {
+    transform: translateY(-3px);
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+/* Contact rows spacing */
+.footer-widget ul.list-unstyled li p {
+    margin-bottom: 2px;
+}
+
+/* App badges */
+.footer-widget img[alt] {
+    border-radius: 8px;
+}
+
+/* Accordion (mobile) refinements */
+.aiz-accordion-wrap.bg-black,
+.aiz-accordion-heading.bg-black {
+    background: var(--ft-bg) !important;
+    border-bottom: 1px solid var(--ft-border);
+}
+
+.aiz-accordion-panel[style*="212129"] {
+    background: var(--ft-bg) !important;
+}
+
+/* Copyright bar */
+footer.bg-black {
+    background: var(--ft-bg-2) !important;
+    border-top: 1px solid var(--ft-border);
+    color: var(--ft-muted) !important;
+}
+
+footer.bg-black .fs-14 {
+    color: var(--ft-muted) !important;
+}
+
+footer.bg-black img {
+    filter: grayscale(0.2) brightness(1.05);
+    opacity: 0.9;
+}

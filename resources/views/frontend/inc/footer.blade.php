@@ -111,12 +111,13 @@
 <section class="py-3 text-light footer-widget border-bottom" style="border-color: #3d3d46 !important; background-color: #212129 !important;">
     <div class="container">
         <!-- footer logo -->
-        <div class="mt-3 mb-4">
+        <div class="mt-3 mb-4 footer-brand">
             <a href="{{ route('home') }}" class="d-block">
-                @if(get_setting('footer_logo') != null)
-                    <img class="lazyload h-45px" src="{{ static_asset('assets/img/placeholder-rect.jpg') }}" data-src="{{ uploaded_asset(get_setting('footer_logo')) }}" alt="{{ env('APP_NAME') }}" height="45">
+                @php $footer_brand_logo = get_setting('footer_logo') ?? get_setting('header_logo'); @endphp
+                @if($footer_brand_logo != null)
+                    <img class="lazyload h-45px" src="{{ static_asset('assets/img/placeholder-rect.jpg') }}" data-src="{{ uploaded_asset($footer_brand_logo) }}" alt="{{ get_setting('website_name') ?? env('APP_NAME') }}" height="45">
                 @else
-                    <img class="lazyload h-45px" src="{{ static_asset('assets/img/placeholder-rect.jpg') }}" data-src="{{ static_asset('assets/img/logo.png') }}" alt="{{ env('APP_NAME') }}" height="45">
+                    <span class="footer-wordmark">{{ get_setting('website_name') ?? env('APP_NAME') }}</span>
                 @endif
             </a>
         </div>
