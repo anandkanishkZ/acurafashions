@@ -63,15 +63,16 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- CSS Files -->
     <link rel="stylesheet" href="{{ static_asset('assets/css/vendors.css') }}">
     @if ($rtl == 1)
         <link rel="stylesheet" href="{{ static_asset('assets/css/bootstrap-rtl.min.css') }}">
     @endif
-    <link rel="stylesheet" href="{{ static_asset('assets/css/aiz-core.css?v=') }}{{ rand(1000, 9999) }}">
-    <link rel="stylesheet" href="{{ static_asset('assets/css/custom-style.css') }}">
+    {{-- Version by file mtime: cacheable, yet busts Cloudflare/browser caches on every deploy --}}
+    <link rel="stylesheet" href="{{ static_asset('assets/css/aiz-core.css') }}?v={{ @filemtime(public_path('assets/css/aiz-core.css')) }}">
+    <link rel="stylesheet" href="{{ static_asset('assets/css/custom-style.css') }}?v={{ @filemtime(public_path('assets/css/custom-style.css')) }}">
 
 
     <script>
@@ -395,7 +396,7 @@
 
     <!-- SCRIPTS -->
     <script src="{{ static_asset('assets/js/vendors.js') }}"></script>
-    <script src="{{ static_asset('assets/js/aiz-core.js?v=') }}{{ rand(1000, 9999) }}"></script>
+    <script src="{{ static_asset('assets/js/aiz-core.js') }}?v={{ @filemtime(public_path('assets/js/aiz-core.js')) }}"></script>
 
     {{-- WhatsaApp Chat --}}
     @if (get_setting('whatsapp_chat') == 1)
