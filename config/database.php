@@ -106,19 +106,25 @@ return [
 
     'redis' => [
 
-        'client' => 'predis',
+        'client' => env('REDIS_CLIENT', 'phpredis'),
+
+        'options' => [
+            'prefix' => env('REDIS_PREFIX', 'acura_'),
+        ],
 
         'default' => [
-            'host' => env('REDIS_HOST', '127.0.0.1'),
-            'password' => env('REDIS_PASSWORD', null),
-            'port' => env('REDIS_PORT', 6379),
+            // For a unix socket (REDIS_PATH) phpredis expects the socket path as
+            // the host with port 0; otherwise fall back to normal host/port.
+            'host' => env('REDIS_PATH') ?: env('REDIS_HOST', '127.0.0.1'),
+            'password' => env('REDIS_PASSWORD') === 'null' ? null : env('REDIS_PASSWORD', null),
+            'port' => env('REDIS_PATH') ? 0 : env('REDIS_PORT', 6379),
             'database' => env('REDIS_DB', 0),
         ],
 
         'cache' => [
-            'host' => env('REDIS_HOST', '127.0.0.1'),
-            'password' => env('REDIS_PASSWORD', null),
-            'port' => env('REDIS_PORT', 6379),
+            'host' => env('REDIS_PATH') ?: env('REDIS_HOST', '127.0.0.1'),
+            'password' => env('REDIS_PASSWORD') === 'null' ? null : env('REDIS_PASSWORD', null),
+            'port' => env('REDIS_PATH') ? 0 : env('REDIS_PORT', 6379),
             'database' => env('REDIS_CACHE_DB', 1),
         ],
 
