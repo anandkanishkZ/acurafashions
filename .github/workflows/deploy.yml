@@ -1,0 +1,57 @@
+name: Deploy to acurafashions.com
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p 22 dacloud.himalayan.host >> ~/.ssh/known_hosts
+
+      - name: Deploy over SSH
+        env:
+          SSH_HOST: dacloud.himalayan.host
+          SSH_USER: acurafashions
+          SSH_PORT: 22
+          APP_PATH: domains/acurafashions.com/acura_app
+        run: |
+          ssh -i ~/.ssh/deploy_key -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "
+            set -e
+            cd ~/$APP_PATH
+
+            echo '--- Fetching latest code ---'
+            git fetch origin main
+            git reset --hard origin/main
+
+            echo '--- Installing dependencies ---'
+            composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=php
+
+            echo '--- Running migrations ---'
+            php artisan migrate --force
+
+            echo '--- Clearing and rebuilding caches ---'
+            php artisan optimize:clear
+            php artisan config:cache
+
+            echo '--- Fixing storage permissions ---'
+            chmod -R 775 storage bootstrap/cache
+
+            echo '--- Deploy complete ---'
+          "
+
+      - name: Verify site is up
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 https://acurafashions.com/)
+          echo "Homepage returned HTTP $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "::error::Site health check failed after deploy (HTTP $STATUS)"
+            exit 1
+          fi
