@@ -92,11 +92,6 @@ class CategoryUtility
         curl_setopt($stream, CURLOPT_TIMEOUT, 8);
         // zwickytechnology.com's server rejects requests with no User-Agent (403).
         curl_setopt($stream, CURLOPT_USERAGENT, 'ActiveEcommerceCMS-LicenseCheck/1.0');
-        // TESTING ONLY: local PHP has no CA bundle configured, so SSL verification
-        // fails outright. Remove these two lines once php.ini's curl.cainfo is set,
-        // or before this ever runs anywhere but a local dev/test machine.
-        curl_setopt($stream, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($stream, CURLOPT_SSL_VERIFYHOST, false);
         $rn = curl_exec($stream);
         $curl_error = curl_errno($stream);
         curl_close($stream);

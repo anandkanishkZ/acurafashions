@@ -32,11 +32,6 @@ class CoreComponentRepository
         curl_setopt($stream, CURLOPT_TIMEOUT, 8);
         // zwickytechnology.com's server rejects requests with no User-Agent (403).
         curl_setopt($stream, CURLOPT_USERAGENT, 'ActiveEcommerceCMS-LicenseCheck/1.0');
-        // TESTING ONLY: local PHP has no CA bundle configured, so SSL verification
-        // fails outright. Remove these two lines once php.ini's curl.cainfo is set,
-        // or before this ever runs anywhere but a local dev/test machine.
-        curl_setopt($stream, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($stream, CURLOPT_SSL_VERIFYHOST, false);
 
         $rn = curl_exec($stream);
         curl_close($stream);
@@ -55,7 +50,7 @@ class CoreComponentRepository
                 self::finalizeCache($addon);
             }
             $item_name = get_setting('item_name') ?? 'ecommerce';
-            
+
             if(Cache::get($addon->unique_identifier.'-purchased', 'no') == 'no'){
                 try {
                     $gate = "https://zwickytechnology.com/license.php?route=addon_check&identifier=".$addon->unique_identifier."&code=".$addon->purchase_code."&item=".$item_name;
@@ -67,8 +62,6 @@ class CoreComponentRepository
                     curl_setopt($stream, CURLOPT_CONNECTTIMEOUT, 5);
                     curl_setopt($stream, CURLOPT_TIMEOUT, 8);
                     curl_setopt($stream, CURLOPT_USERAGENT, 'ActiveEcommerceCMS-LicenseCheck/1.0');
-                    curl_setopt($stream, CURLOPT_SSL_VERIFYPEER, false);
-                    curl_setopt($stream, CURLOPT_SSL_VERIFYHOST, false);
                     $rn = curl_exec($stream);
                     curl_close($stream);
                     if($rn == 'no') {
@@ -80,7 +73,7 @@ class CoreComponentRepository
                         });
                     }
                 } catch (\Exception $e) {
-        
+
                 }
             }
         }
@@ -92,5 +85,5 @@ class CoreComponentRepository
 
         flash('Please reinstall '.$addon->name.' using valid purchase code')->warning();
         return redirect()->route('addons.index')->send();
-    } 
+    }
 }
