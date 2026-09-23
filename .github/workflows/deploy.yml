@@ -34,9 +34,6 @@ jobs:
             echo '--- Installing dependencies ---'
             composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=php
 
-            echo '--- Running migrations ---'
-            php artisan migrate --force
-
             echo '--- Clearing and rebuilding caches ---'
             php artisan optimize:clear
             php artisan config:cache
