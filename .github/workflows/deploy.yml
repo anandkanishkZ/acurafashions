@@ -23,7 +23,10 @@ jobs:
           SSH_PORT: 22
           APP_PATH: domains/acurafashions.com/acura_app
         run: |
-          ssh -i ~/.ssh/deploy_key -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "
+          ssh -i ~/.ssh/deploy_key -p "$SSH_PORT" \
+            -o ServerAliveInterval=15 -o ServerAliveCountMax=6 \
+            -o ConnectTimeout=30 -o TCPKeepAlive=yes \
+            "$SSH_USER@$SSH_HOST" "
             set -e
             cd ~/$APP_PATH
 
