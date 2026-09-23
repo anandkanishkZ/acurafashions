@@ -279,25 +279,41 @@
     --ft-heading: #f4f5f7;
 }
 
-/* Policy cards row -> clean icon tiles */
+/* Policy row -> minimal inline chips (icon + label), no bulky cards */
+.row.no-gutters.border-left.border-soft-light {
+    border: none !important;
+    padding: 4px 0;
+}
+
 .policy-file > a {
     border: none !important;
-    background: var(--ft-bg-2);
-    border-radius: 14px;
-    margin: 6px;
-    padding: 26px 16px !important;
-    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    background: transparent !important;
+    border-radius: 10px;
+    margin: 0;
+    padding: 14px 12px !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: background-color 0.18s ease;
 }
 
 .policy-file > a:hover {
-    transform: translateY(-3px);
-    background: #191d25;
-    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18);
+    background: rgba(17, 24, 39, 0.04) !important;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Shrink the icons and drop them inline before the label */
+.policy-file svg {
+    width: 18px !important;
+    height: 18px !important;
+    flex: 0 0 auto;
 }
 
 .policy-file svg path,
 .policy-file svg rect {
-    transition: fill 0.2s ease;
+    transition: fill 0.18s ease;
 }
 
 .policy-file > a:hover svg path,
@@ -305,19 +321,33 @@
     fill: var(--primary) !important;
 }
 
+/* Label: small, inline, no big top margin */
 .policy-file h4 {
+    margin: 0 !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
     letter-spacing: 0.01em;
+    color: #374151 !important;
+    text-transform: none;
 }
 
-.row.no-gutters.border-left.border-soft-light {
-    border: none !important;
-    padding: 8px 0;
+.policy-file > a:hover h4 {
+    color: var(--primary) !important;
 }
 
-/* Section with policy tiles gets a light canvas */
+/* Thin dividers between items on wider screens */
+@media (min-width: 768px) {
+    .policy-file:not(:last-child) > a {
+        border-right: 1px solid #e9ebef !important;
+        border-radius: 0;
+    }
+}
+
+/* Section with policy row -> subtle light strip */
 section.bg-light.border-top.mt-auto {
-    background: #f6f7f9 !important;
+    background: #fafbfc !important;
     border: none !important;
+    border-bottom: 1px solid #eceef2 !important;
 }
 
 /* Main footer widget sections -> deep, refined dark */
