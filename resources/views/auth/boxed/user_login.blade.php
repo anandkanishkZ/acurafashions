@@ -8,9 +8,13 @@
                 <div class="auth-brand-glow"></div>
                 <div class="auth-brand-top">
                     <div class="auth-brand-logo">
-                        <img src="{{ uploaded_asset(get_setting('site_icon')) }}" alt="{{ translate('Site Icon') }}">
+                        @if(get_setting('site_icon'))
+                            <img src="{{ uploaded_asset(get_setting('site_icon')) }}" alt="{{ translate('Site Icon') }}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                        @endif
+                        <span class="auth-logo-fallback" style="{{ get_setting('site_icon') ? 'display:none;' : '' }}">{{ strtoupper(substr(get_setting('website_name', 'A'), 0, 1)) }}</span>
                     </div>
-                    <h1 class="auth-brand-heading">{{ translate('Welcome back to') }} {{ get_setting('website_name') }}</h1>
+                    <div class="auth-brand-badge"><span class="dot"></span> {{ translate('Members Only Access') }}</div>
+                    <h1 class="auth-brand-heading">{{ translate('Welcome back to') }} <span class="accent">{{ get_setting('website_name') }}</span></h1>
                     <p class="auth-brand-sub">{{ translate('Sign in to track orders, manage your wishlist and enjoy a faster, personalised checkout experience.') }}</p>
 
                     <ul class="auth-feature-list">
@@ -39,13 +43,17 @@
 
             <!-- Form Panel -->
             <div class="col-lg-6 auth-form-panel">
+              <div class="auth-form-card">
                 <div class="auth-form-inner">
                     <div class="auth-form-top">
                         <a href="{{ url()->previous() }}" class="auth-back-link desktop-only">
                             <i class="las la-arrow-left"></i> {{ translate('Back') }}
                         </a>
                         <div class="auth-mobile-logo">
-                            <img src="{{ uploaded_asset(get_setting('site_icon')) }}" alt="{{ translate('Site Icon') }}" class="img-fit h-100 w-100">
+                            @if(get_setting('site_icon'))
+                                <img src="{{ uploaded_asset(get_setting('site_icon')) }}" alt="{{ translate('Site Icon') }}" class="img-fit h-100 w-100" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                            @endif
+                            <span class="auth-logo-fallback" style="{{ get_setting('site_icon') ? 'display:none;' : 'display:flex;' }}">{{ strtoupper(substr(get_setting('website_name', 'A'), 0, 1)) }}</span>
                         </div>
                     </div>
 
@@ -197,6 +205,7 @@
                         </a>
                     </div>
                 </div>
+              </div>
             </div>
         </div>
     </div>
