@@ -1,0 +1,56 @@
+<?php
+
+namespace App\Services\OTP;
+
+use App\Contracts\SendSms;
+use Illuminate\Support\Str;
+
+class BulletSms implements SendSms
+{
+    public function send($to, $from, $text, $template_id)
+    {
+        $token = otp_secret_setting('bullet_sms_token');
+        $senderId = otp_setting('bullet_sms_sender_id');
+
+        if (empty($token)) {
+            throw new \RuntimeException('Bullet SMS token is not configured.');
+        }
+
+        $params = [
+            'to' => [normalize_nepal_mobile_number($to)],
+            'message' => $text,
+            'senderId' => $senderId ?: $from,
+        ];
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://api.bulletsms.com/api/v1/sms/send');
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer ' . $token,
+            'Content-Type: application/json',
+            'Idempotency-Key: ' . (string) Str::uuid(),
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+
+        if ($curlError) {
+            throw new \RuntimeException('Bullet SMS request failed: ' . $curlError);
+        }
+
+        $decoded = json_decode($response, true);
+
+        if ($httpCode < 200 || $httpCode >= 300 || empty($decoded['success'])) {
+            $message = $decoded['message'] ?? ('HTTP ' . $httpCode);
+            throw new \RuntimeException('Bullet SMS error: ' . $message);
+        }
+
+        return $response;
+    }
+}

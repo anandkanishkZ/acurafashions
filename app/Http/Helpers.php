@@ -1564,6 +1564,61 @@ if (!function_exists('addon_is_activated')) {
     }
 }
 
+// OTP settings (Bullet SMS credentials + behaviour, stored in business_settings
+// so they are admin-configurable without touching .env or redeploying).
+if (!function_exists('otp_setting')) {
+    function otp_setting($key, $default = null)
+    {
+        return get_setting('otp_' . $key, $default);
+    }
+}
+
+// Secrets (API tokens) are encrypted at rest in business_settings using the
+// app's APP_KEY, and decrypted only when actually calling the gateway.
+// Never echo the decrypted value back into a page.
+if (!function_exists('otp_secret_setting')) {
+    function otp_secret_setting($key, $default = null)
+    {
+        $encrypted = get_setting('otp_' . $key);
+        if (empty($encrypted)) {
+            return $default;
+        }
+
+        try {
+            return \Illuminate\Support\Facades\Crypt::decryptString($encrypted);
+        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+            return $default;
+        }
+    }
+}
+
+// Bullet SMS only validates Nepal mobile numbers: 10 digits after stripping
+// spaces/dashes/leading +/977 or 00977, starting with one of these prefixes.
+if (!function_exists('is_nepal_mobile_number')) {
+    function is_nepal_mobile_number($phone)
+    {
+        $digits = preg_replace('/[\s\-\(\)]/', '', (string) $phone);
+        $digits = preg_replace('/^\+?977/', '', $digits);
+        $digits = preg_replace('/^00977/', '', $digits);
+
+        $validPrefixes = ['980', '981', '982', '984', '985', '986', '961', '962', '988', '972', '973'];
+
+        return preg_match('/^\d{10}$/', $digits) === 1 && in_array(substr($digits, 0, 3), $validPrefixes, true);
+    }
+}
+
+// Normalizes a phone number to the bare 10-digit Nepal format Bullet SMS expects.
+if (!function_exists('normalize_nepal_mobile_number')) {
+    function normalize_nepal_mobile_number($phone)
+    {
+        $digits = preg_replace('/[\s\-\(\)]/', '', (string) $phone);
+        $digits = preg_replace('/^\+?977/', '', $digits);
+        $digits = preg_replace('/^00977/', '', $digits);
+
+        return $digits;
+    }
+}
+
 // Addon Activation Check
 if (!function_exists('seller_package_validity_check')) {
     function seller_package_validity_check($user_id = null)

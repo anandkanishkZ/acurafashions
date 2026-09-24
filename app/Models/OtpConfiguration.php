@@ -9,5 +9,5 @@ class OtpConfiguration extends Model
 {
     use PreventDemoModeChanges;
 
-    //
+    protected $guarded = [];
 }
