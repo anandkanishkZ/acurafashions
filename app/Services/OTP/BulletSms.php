@@ -53,4 +53,52 @@ class BulletSms implements SendSms
 
         return $response;
     }
+
+    /**
+     * GET /balance — returns the remaining SMS credits on the configured
+     * Bullet SMS token. Throws on missing token / request failure so the
+     * caller can show a clear error instead of a blank/zero balance.
+     *
+     * @return array{balance: int|float, unit: string}
+     */
+    public function getBalance()
+    {
+        $token = otp_secret_setting('bullet_sms_token');
+
+        if (empty($token)) {
+            throw new \RuntimeException('Bullet SMS token is not configured.');
+        }
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://api.bulletsms.com/api/v1/balance');
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPGET, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer ' . $token,
+            'Content-Type: application/json',
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+
+        if ($curlError) {
+            throw new \RuntimeException('Bullet SMS request failed: ' . $curlError);
+        }
+
+        $decoded = json_decode($response, true);
+
+        if ($httpCode < 200 || $httpCode >= 300 || !is_array($decoded) || !array_key_exists('balance', $decoded)) {
+            $message = $decoded['message'] ?? ('HTTP ' . $httpCode);
+            throw new \RuntimeException('Bullet SMS error: ' . $message);
+        }
+
+        return [
+            'balance' => $decoded['balance'],
+            'unit' => $decoded['unit'] ?? 'SMS',
+        ];
+    }
 }

@@ -8,12 +8,13 @@ use Illuminate\Http\Request;
 use App\Models\Addon;
 use App\Models\BusinessSetting;
 use App\Models\OtpConfiguration;
+use App\Services\OTP\BulletSms;
 
 class OTPController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['permission:otp_configurations'])->only(['loginConfigure', 'configure_index', 'updateActivationSettings', 'update_credentials']);
+        $this->middleware(['permission:otp_configurations'])->only(['loginConfigure', 'configure_index', 'updateActivationSettings', 'update_credentials', 'checkBalance']);
     }
 
     /**
@@ -103,6 +104,28 @@ class OTPController extends Controller
 
         flash(translate('SMS gateway credentials updated successfully'))->success();
         return back();
+    }
+
+    /**
+     * AJAX: fetch the remaining SMS credit balance from Bullet SMS on
+     * demand (GET /balance), so the admin can see it without us pinging
+     * the gateway on every page load.
+     */
+    public function checkBalance()
+    {
+        try {
+            $result = (new BulletSms())->getBalance();
+            return response()->json([
+                'success' => true,
+                'balance' => $result['balance'],
+                'unit' => $result['unit'],
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 422);
+        }
     }
 
     protected function saveSetting($type, $value)

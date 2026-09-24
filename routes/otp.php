@@ -41,6 +41,7 @@ Route::group(['prefix' =>'admin', 'middleware' => ['auth', 'admin']], function()
         Route::get('/otp-configuration', 'configure_index')->name('otp.configconfiguration');
         Route::post('/otp-configuration/update/activation', 'updateActivationSettings')->name('otp_configurations.update.activation');
         Route::post('/otp-credentials-update', 'update_credentials')->name('update_credentials');
+        Route::get('/otp-check-balance', 'checkBalance')->name('otp.check_balance');
     });
     //Messaging
     Route::controller(SmsController::class)->group(function () {

@@ -40,6 +40,23 @@
     </div>
     <div class="col-md-6">
         <div class="card">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h5 class="mb-0 h6">{{ translate('SMS Credits') }}</h5>
+                <button type="button" id="check-balance-btn" class="btn btn-sm btn-outline-primary" onclick="checkOtpBalance()">
+                    {{ translate('Check Balance') }}
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="balance-result">
+                    @if (!$hasBulletSmsToken)
+                        <p class="mb-0 text-muted">{{ translate('Configure your Bullet SMS token first, then check your balance.') }}</p>
+                    @else
+                        <p class="mb-0 text-muted">{{ translate('Click "Check Balance" to fetch your current SMS credits from Bullet SMS.') }}</p>
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div class="card">
             <div class="card-header">
                 <h5 class="mb-0 h6">{{ translate('Active Gateway') }}</h5>
             </div>
@@ -64,4 +81,30 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('script')
+    <script type="text/javascript">
+        function checkOtpBalance() {
+            var $btn = $('#check-balance-btn');
+            var $result = $('#balance-result');
+
+            $btn.prop('disabled', true).text('{{ translate('Checking...') }}');
+
+            $.get('{{ route('otp.check_balance') }}')
+                .done(function (data) {
+                    $result.html(
+                        '<p class="mb-0"><span class="h3 mb-0 text-primary">' + data.balance + '</span> ' +
+                        '<span class="text-muted">' + data.unit + ' {{ translate('remaining') }}</span></p>'
+                    );
+                })
+                .fail(function (xhr) {
+                    var message = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : '{{ translate('Could not fetch balance.') }}';
+                    $result.html('<p class="mb-0 text-danger">' + message + '</p>');
+                })
+                .always(function () {
+                    $btn.prop('disabled', false).text('{{ translate('Check Balance') }}');
+                });
+        }
+    </script>
 @endsection
