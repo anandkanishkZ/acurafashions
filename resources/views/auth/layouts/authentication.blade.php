@@ -37,6 +37,7 @@
     @endif
     <link rel="stylesheet" href="{{ static_asset('assets/css/aiz-core.css') }}?v={{ @filemtime(public_path('assets/css/aiz-core.css')) }}">
     
+    <link rel="stylesheet" href="{{ static_asset('assets/css/auth-style.css') }}?v={{ @filemtime(public_path('assets/css/auth-style.css')) }}">
     <style>
         :root{
             --blue: #3490f3;
@@ -61,27 +62,6 @@
             --primary: {{ get_setting('base_color', '#d43533') }};
             --hov-primary: {{ get_setting('base_hov_color', '#9d1b1a') }};
             --soft-primary: {{ hex2rgba(get_setting('base_color', '#d43533'), 0.15) }};
-        }
-        body{
-            font-family: 'Public Sans', sans-serif;
-            font-weight: 400;
-        }
-
-        .form-control:focus {
-            border-width: 2px !important;
-        }
-        @media (max-width: 991px) {
-            .right-content{
-                background: var(--white);
-                margin-top: -60%;
-                border-radius: 24px;
-                min-height: 550px;
-            }
-        }
-        @media (min-width: 991px) {
-            .right-content{
-                height: 100%;
-            }
         }
     </style>
 
