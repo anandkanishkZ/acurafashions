@@ -3,6 +3,44 @@
 @section('content')
     <div class="auth-page">
         <div class="auth-shell">
+            <!-- Hero Panel (desktop only) -->
+            <div class="auth-hero-panel">
+                <div class="auth-hero-top">
+                    <div class="auth-hero-brand">
+                        @if(get_setting('site_icon'))
+                            <span class="auth-hero-brand-mark">
+                                <img src="{{ uploaded_asset(get_setting('site_icon')) }}" alt="{{ translate('Site Icon') }}">
+                            </span>
+                        @endif
+                        {{ get_setting('website_name') }}
+                    </div>
+
+                    <h1 class="auth-hero-heading">{{ translate('Join thousands of') }} <u>{{ translate('happy shoppers') }}.</u></h1>
+                    <p class="auth-hero-sub">{{ translate('Create your free account to unlock faster checkout, order tracking and exclusive member offers.') }}</p>
+
+                    <ul class="auth-hero-features">
+                        <li>
+                            <span class="auth-hero-feature-icon"><i class="las la-bolt"></i></span>
+                            <span>{{ translate('One-click checkout on every future order') }}</span>
+                        </li>
+                        <li>
+                            <span class="auth-hero-feature-icon"><i class="las la-gift"></i></span>
+                            <span>{{ translate('Exclusive deals and early access to sales') }}</span>
+                        </li>
+                        <li>
+                            <span class="auth-hero-feature-icon"><i class="las la-history"></i></span>
+                            <span>{{ translate('Complete order history in one dashboard') }}</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="auth-hero-bottom">
+                    <span class="auth-hero-badge"><span class="dot"></span> {{ translate('Free & Instant Access') }}</span>
+                </div>
+            </div>
+
+            <!-- Form Panel -->
+            <div class="auth-form-side">
             <div class="auth-card">
                 <div class="auth-top-row">
                     <a href="{{ url()->previous() }}" class="auth-back-link">
@@ -204,6 +242,7 @@
                 <span class="perk"><i class="las la-bolt"></i> {{ translate('Instant Access') }}</span>
                 <span class="perk"><i class="las la-gift"></i> {{ translate('Member Deals') }}</span>
                 <span class="perk"><i class="las la-shield-alt"></i> {{ translate('Secure & Private') }}</span>
+            </div>
             </div>
         </div>
     </div>

@@ -3,6 +3,44 @@
 @section('content')
     <div class="auth-page">
         <div class="auth-shell">
+            <!-- Hero Panel (desktop only) -->
+            <div class="auth-hero-panel">
+                <div class="auth-hero-top">
+                    <div class="auth-hero-brand">
+                        @if(get_setting('site_icon'))
+                            <span class="auth-hero-brand-mark">
+                                <img src="{{ uploaded_asset(get_setting('site_icon')) }}" alt="{{ translate('Site Icon') }}">
+                            </span>
+                        @endif
+                        {{ get_setting('website_name') }}
+                    </div>
+
+                    <h1 class="auth-hero-heading">{{ translate('Simplify shopping with') }} <u>{{ translate('your account') }}.</u></h1>
+                    <p class="auth-hero-sub">{{ translate('Sign in to track orders, manage your wishlist and enjoy a faster, personalised checkout experience.') }}</p>
+
+                    <ul class="auth-hero-features">
+                        <li>
+                            <span class="auth-hero-feature-icon"><i class="las la-shipping-fast"></i></span>
+                            <span>{{ translate('Real-time order tracking and delivery updates') }}</span>
+                        </li>
+                        <li>
+                            <span class="auth-hero-feature-icon"><i class="las la-heart"></i></span>
+                            <span>{{ translate('Save your favourite items to your wishlist') }}</span>
+                        </li>
+                        <li>
+                            <span class="auth-hero-feature-icon"><i class="las la-shield-alt"></i></span>
+                            <span>{{ translate('Secure, encrypted account & payment protection') }}</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="auth-hero-bottom">
+                    <span class="auth-hero-badge"><span class="dot"></span> {{ translate('256-bit SSL Secured') }}</span>
+                </div>
+            </div>
+
+            <!-- Form Panel -->
+            <div class="auth-form-side">
             <div class="auth-card">
                 <div class="auth-top-row">
                     <a href="{{ url()->previous() }}" class="auth-back-link">
@@ -165,6 +203,7 @@
                 <span class="perk"><i class="las la-shield-alt"></i> {{ translate('Secure Login') }}</span>
                 <span class="perk"><i class="las la-shipping-fast"></i> {{ translate('Fast Checkout') }}</span>
                 <span class="perk"><i class="las la-headset"></i> {{ translate('24/7 Support') }}</span>
+            </div>
             </div>
         </div>
     </div>

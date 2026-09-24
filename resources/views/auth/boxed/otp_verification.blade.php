@@ -3,6 +3,29 @@
 @section('content')
     <div class="auth-page">
         <div class="auth-shell">
+            <!-- Hero Panel (desktop only) -->
+            <div class="auth-hero-panel">
+                <div class="auth-hero-top">
+                    <div class="auth-hero-brand">
+                        @if(get_setting('site_icon'))
+                            <span class="auth-hero-brand-mark">
+                                <img src="{{ uploaded_asset(get_setting('site_icon')) }}" alt="{{ translate('Site Icon') }}">
+                            </span>
+                        @endif
+                        {{ get_setting('website_name') }}
+                    </div>
+
+                    <h1 class="auth-hero-heading">{{ translate('Almost there') }} <u>{{ translate('verify to continue') }}.</u></h1>
+                    <p class="auth-hero-sub">{{ translate('Enter the code we texted you to keep your account secure.') }}</p>
+                </div>
+
+                <div class="auth-hero-bottom">
+                    <span class="auth-hero-badge"><span class="dot"></span> {{ translate('256-bit SSL Secured') }}</span>
+                </div>
+            </div>
+
+            <!-- Form Panel -->
+            <div class="auth-form-side">
             <div class="auth-card">
                 <div class="auth-top-row">
                     <a href="{{ url()->previous() }}" class="auth-back-link">
@@ -51,6 +74,7 @@
                     {{ translate("Didn't receive the code?") }}
                     <a href="{{ $resendRoute }}" class="auth-link">{{ translate('Resend Code') }}</a>
                 </p>
+            </div>
             </div>
         </div>
     </div>

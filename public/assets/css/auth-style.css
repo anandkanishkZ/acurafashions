@@ -1,5 +1,8 @@
 /* ==========================================================================
-   Auth pages — light, soft, premium mobile-app style (login / registration)
+   Auth pages — premium split-screen layout (login / registration)
+   Left: bold gradient hero panel with headline + feature highlights.
+   Right: clean white form panel. Collapses to a single centered card on
+   mobile/tablet, where the hero panel becomes a compact top banner.
    Scoped to .auth-page so it never leaks into the rest of the storefront.
    ========================================================================== */
 
@@ -7,18 +10,176 @@
     min-height: 100vh;
     font-family: 'Public Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
-    background:
-        radial-gradient(ellipse 800px 500px at 15% -5%, rgba(99, 102, 241, 0.16) 0%, rgba(99, 102, 241, 0) 60%),
-        radial-gradient(ellipse 700px 500px at 100% 15%, var(--soft-primary) 0%, rgba(255, 255, 255, 0) 55%),
-        linear-gradient(180deg, #f3f2fb 0%, #eef0fa 45%, #eef2f9 100%);
+    background: #fff;
 }
 
 .auth-shell {
     min-height: 100vh;
     display: flex;
+    align-items: stretch;
+}
+
+/* ---------- Hero panel (left, desktop) ---------- */
+
+.auth-hero-panel {
+    position: relative;
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 46%;
+    min-width: 420px;
+    max-width: 620px;
+    padding: 56px 48px;
+    overflow: hidden;
+    color: #fff;
+    background:
+        radial-gradient(ellipse 620px 420px at 10% -8%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 60%),
+        radial-gradient(ellipse 520px 520px at 105% 100%, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0) 55%),
+        linear-gradient(155deg, var(--primary) 0%, var(--hov-primary) 130%);
+}
+
+.auth-hero-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 36px 36px;
+    mask-image: radial-gradient(circle at 25% 20%, #000 0%, transparent 65%);
+    pointer-events: none;
+}
+
+.auth-hero-top,
+.auth-hero-bottom {
+    position: relative;
+    z-index: 1;
+}
+
+.auth-hero-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: #fff;
+}
+
+.auth-hero-brand .auth-hero-brand-mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.auth-hero-brand .auth-hero-brand-mark img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.auth-hero-heading {
+    font-size: 38px;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    margin: 44px 0 16px;
+    max-width: 420px;
+}
+
+.auth-hero-heading u {
+    text-decoration: none;
+    position: relative;
+}
+
+.auth-hero-heading u::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 2px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.28);
+    border-radius: 4px;
+    z-index: -1;
+}
+
+.auth-hero-sub {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.78);
+    max-width: 380px;
+    line-height: 1.65;
+}
+
+.auth-hero-features {
+    list-style: none;
+    padding: 0;
+    margin: 40px 0 0;
+    position: relative;
+    z-index: 1;
+}
+
+.auth-hero-features li {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 18px;
+}
+
+.auth-hero-feature-icon {
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+}
+
+.auth-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.auth-hero-badge .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.28);
+}
+
+/* ---------- Form panel (right) ---------- */
+
+.auth-form-side {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 32px 16px;
+    background: #fff;
 }
 
 /* ---------- Card ---------- */
@@ -34,6 +195,22 @@
         0 24px 48px -16px rgba(76, 81, 148, 0.18),
         0 0 0 1px rgba(76, 81, 148, 0.04);
     position: relative;
+}
+
+@media (min-width: 992px) {
+    .auth-hero-panel {
+        display: flex;
+    }
+
+    .auth-card {
+        box-shadow: none;
+        border-radius: 0;
+        padding: 12px 24px;
+    }
+
+    .auth-form-side {
+        padding: 32px 56px;
+    }
 }
 
 /* ---------- Header ---------- */
@@ -102,6 +279,16 @@
     font-size: 22px;
     font-weight: 800;
     color: #fff;
+}
+
+@media (min-width: 992px) {
+    .auth-logo-mark {
+        display: none;
+    }
+
+    .auth-heading-block {
+        text-align: left !important;
+    }
 }
 
 .auth-heading-block {
@@ -343,42 +530,49 @@
     background: #f7f7fc;
 }
 
-/* Feature strip under the card (desktop only) */
+/* Feature strip under the card — shown only when the hero panel is hidden
+   (mobile/tablet), since the hero panel already carries this messaging
+   on desktop. */
 .auth-perks-row {
-    display: none;
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    margin-top: 22px;
+    flex-wrap: wrap;
 }
 
-@media (min-width: 576px) {
+.auth-perks-row .perk {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-dark);
+}
+
+.auth-perks-row .perk i {
+    color: var(--primary);
+    font-size: 14px;
+}
+
+@media (min-width: 992px) {
     .auth-perks-row {
-        display: flex;
-        justify-content: center;
-        gap: 26px;
-        margin-top: 22px;
-        flex-wrap: wrap;
-    }
-
-    .auth-perks-row .perk {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        font-size: 12.5px;
-        font-weight: 600;
-        color: var(--gray-dark);
-    }
-
-    .auth-perks-row .perk i {
-        color: var(--primary);
-        font-size: 15px;
+        display: none;
     }
 }
 
 /* ---------- Responsive ---------- */
 
+@media (max-width: 991.98px) {
+    .auth-form-side {
+        padding: 28px 16px 40px;
+    }
+}
+
 @media (max-width: 575.98px) {
-    .auth-shell {
-        padding: 20px 14px;
+    .auth-form-side {
         align-items: flex-start;
-        padding-top: 48px;
+        padding-top: 40px;
     }
 
     .auth-card {
