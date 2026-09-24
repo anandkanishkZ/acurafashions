@@ -57,6 +57,17 @@ class VerificationController extends Controller
                             : view('auth.'.get_setting('authentication_layout_select').'.verify_email');
         }
         else {
+            // Phone-only account: if it's already verified, send them back
+            // to whatever `verified`-gated page they were actually trying to
+            // reach. Redirect::guest() (used by the `verified` middleware)
+            // already stashed that URL under the standard url.intended
+            // session key, same as Laravel's own login flow — read it back
+            // here instead of looping into verification and, worse, sending
+            // a brand new OTP on every single visit.
+            if ($request->user()->hasVerifiedEmail()) {
+                return redirect()->intended($this->redirectPath());
+            }
+
             $otpController = new OTPVerificationController;
             $otpController->send_code($request->user());
             return redirect()->route('verification');

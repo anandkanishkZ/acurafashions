@@ -22,12 +22,28 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Phone-only accounts (no email on file) can never satisfy the default
+     * email_verified_at check, which permanently locked them out of every
+     * `verified`-gated route (dashboard, checkout) even after completing
+     * phone OTP verification. For those accounts, verification is judged
+     * by phone_verified_at instead.
+     */
+    public function hasVerifiedEmail()
+    {
+        if ($this->email === null) {
+            return $this->phone_verified_at !== null;
+        }
+
+        return ! is_null($this->email_verified_at);
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'address', 'city', 'postal_code', 'phone', 'country', 'provider_id', 'email_verified_at', 'verification_code'
+        'name', 'email', 'password', 'address', 'city', 'postal_code', 'phone', 'country', 'provider_id', 'email_verified_at', 'phone_verified_at', 'verification_code'
     ];
 
     /**

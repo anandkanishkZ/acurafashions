@@ -46,7 +46,7 @@ class SmsController extends Controller
             }
 
             try {
-                $service->sendSMS($normalized, env('APP_NAME'), $request->message, null);
+                $service->sendSMS($normalized, get_setting('website_name'), $request->message, null);
                 $sent++;
             } catch (\Throwable $e) {
                 $failed++;

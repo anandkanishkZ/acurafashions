@@ -16,7 +16,7 @@ class SmsUtility
         }
 
         $body = $template->sms_body;
-        $replacements['[[site_name]]'] = env('APP_NAME');
+        $replacements['[[site_name]]'] = get_setting('website_name');
 
         foreach ($replacements as $search => $value) {
             $body = str_replace($search, $value, $body);
@@ -37,7 +37,7 @@ class SmsUtility
             return;
         }
 
-        (new SendSmsService())->sendSMS($phone, env('APP_NAME'), $rendered['body'], $rendered['template_id']);
+        (new SendSmsService())->sendSMS($phone, get_setting('website_name'), $rendered['body'], $rendered['template_id']);
     }
 
     public static function payment_status_change($phone, $order)
@@ -52,7 +52,7 @@ class SmsUtility
             return;
         }
 
-        (new SendSmsService())->sendSMS($phone, env('APP_NAME'), $rendered['body'], $rendered['template_id']);
+        (new SendSmsService())->sendSMS($phone, get_setting('website_name'), $rendered['body'], $rendered['template_id']);
     }
 
     public static function assign_delivery_boy($phone, $orderCode)
@@ -65,6 +65,6 @@ class SmsUtility
             return;
         }
 
-        (new SendSmsService())->sendSMS($phone, env('APP_NAME'), $rendered['body'], $rendered['template_id']);
+        (new SendSmsService())->sendSMS($phone, get_setting('website_name'), $rendered['body'], $rendered['template_id']);
     }
 }

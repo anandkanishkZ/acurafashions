@@ -63,7 +63,7 @@ class OTPVerificationController extends Controller
 
         $body = str_replace('[[code]]', $code, $body);
         $body = str_replace('[[expiry_minutes]]', $this->expiryMinutes(), $body);
-        $body = str_replace('[[site_name]]', env('APP_NAME'), $body);
+        $body = str_replace('[[site_name]]', get_setting('website_name'), $body);
         foreach ($replacements as $search => $value) {
             $body = str_replace($search, $value, $body);
         }
@@ -71,7 +71,7 @@ class OTPVerificationController extends Controller
         // Send first: only persist a code once we know it actually went out,
         // so a failed send never leaves a verifiable-but-undelivered code
         // sitting in the table (and never blocks a retry via the cooldown).
-        (new SendSmsService())->sendSMS($phone, env('APP_NAME'), $body, $template->template_id ?? null);
+        (new SendSmsService())->sendSMS($phone, get_setting('website_name'), $body, $template->template_id ?? null);
 
         $otp = OtpCode::create([
             'phone' => $phone,
@@ -172,9 +172,9 @@ class OTPVerificationController extends Controller
         $template = SmsTemplate::where('identifier', 'order_placement')->first();
         $body = $template !== null ? $template->sms_body : 'Thank you for your order at [[site_name]]. Your order code is [[order_code]].';
         $body = str_replace('[[order_code]]', $order->code, $body);
-        $body = str_replace('[[site_name]]', env('APP_NAME'), $body);
+        $body = str_replace('[[site_name]]', get_setting('website_name'), $body);
 
-        (new SendSmsService())->sendSMS(normalize_nepal_mobile_number($phone), env('APP_NAME'), $body, $template->template_id ?? null);
+        (new SendSmsService())->sendSMS(normalize_nepal_mobile_number($phone), get_setting('website_name'), $body, $template->template_id ?? null);
     }
 
     // ------------------------------------------------------------------
@@ -216,6 +216,7 @@ class OTPVerificationController extends Controller
         }
 
         $user->verification_code = null;
+        $user->phone_verified_at = now();
         $user->save();
 
         offerUserWelcomeCoupon();
