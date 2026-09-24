@@ -1,6 +1,150 @@
 /*your custom css goes here*/
 
 /* =========================================================================
+   Product cards — premium, rounded, soft-shadow redesign
+   Restyles the existing .aiz-card-box markup (product_box_1.blade.php) with
+   no structural changes, so all hover/JS behaviour (wishlist, compare,
+   add-to-cart overlay, discount badge reveal) keeps working untouched.
+   ========================================================================= */
+
+.aiz-card-box {
+    border-radius: 16px !important;
+    border: 1px solid #f0f0f5 !important;
+    box-shadow: 0 1px 2px rgba(17, 17, 17, 0.03), 0 8px 20px -12px rgba(17, 17, 17, 0.10);
+    transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+}
+
+.aiz-card-box:hover {
+    box-shadow: 0 4px 10px rgba(17, 17, 17, 0.04), 0 16px 32px -14px rgba(17, 17, 17, 0.16);
+    border-color: #eceafb !important;
+    transform: translateY(-3px);
+}
+
+/* Image area: round the top corners to match the card, keep overflow hidden
+   so the existing hov-scale-img zoom effect stays clipped */
+.aiz-card-box > .position-relative.img-fit {
+    border-radius: 16px 16px 0 0;
+    background: #fafafa;
+}
+
+/* Discount badge -> soft pill instead of a sharp rectangle */
+.aiz-card-box .absolute-top-left.bg-primary {
+    border-radius: 999px !important;
+    padding: 3px 9px !important;
+    top: 10px !important;
+    left: 10px !important;
+    margin: 0 !important;
+    box-shadow: 0 4px 10px -3px var(--soft-primary);
+}
+
+/* Wishlist / compare icon cluster -> floating circular buttons */
+.aiz-card-box .aiz-p-hov-icon {
+    top: 10px !important;
+    right: 10px !important;
+}
+
+.aiz-card-box .aiz-p-hov-icon a {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 10px rgba(17, 17, 17, 0.12);
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.aiz-card-box .aiz-p-hov-icon a:hover {
+    background: var(--primary);
+}
+
+.aiz-card-box .aiz-p-hov-icon a:hover svg path,
+.aiz-card-box .aiz-p-hov-icon a:hover svg g {
+    fill: #fff !important;
+}
+
+/* Add-to-cart hover bar -> rounded pill floating above the bottom edge */
+.aiz-card-box .cart-btn {
+    background: var(--dark);
+    opacity: 0.94;
+    left: 10px !important;
+    right: 10px;
+    bottom: 10px;
+    width: calc(100% - 20px) !important;
+    border-radius: 10px;
+}
+
+/* Touch devices have no hover: the wishlist/compare icons and the add-to-cart
+   bar rely on :hover to slide into view on desktop, which leaves them
+   permanently hidden on mobile/tablet. Make them always visible there,
+   matching the reference app's always-on wishlist heart + cart icon. */
+@media (max-width: 991.98px) {
+    .aiz-card-box .aiz-p-hov-icon a {
+        transform: none !important;
+        -webkit-transform: none !important;
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+    }
+
+    .aiz-card-box .aiz-p-hov-icon {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    .aiz-card-box .cart-btn {
+        transform: none !important;
+        opacity: 1;
+        height: 30px !important;
+        bottom: 8px;
+        left: 8px !important;
+        right: 8px;
+        width: calc(100% - 16px) !important;
+        border-radius: 8px;
+    }
+
+    .aiz-card-box .cart-btn .cart-btn-text {
+        margin: 0 !important;
+        font-size: 11px;
+    }
+
+    .aiz-card-box .cart-btn span:last-child {
+        display: none;
+    }
+
+    .aiz-card-box .disc-amount {
+        opacity: 1 !important;
+        margin-right: 0 !important;
+    }
+}
+
+/* Body / price block spacing */
+.aiz-card-box .p-2.p-md-3 {
+    padding: 14px 14px 16px !important;
+}
+
+.aiz-card-box h3.fs-13 a {
+    font-weight: 600;
+    color: #1f2430;
+}
+
+.aiz-card-box .fs-14.d-flex {
+    margin-top: 8px !important;
+    justify-content: flex-start !important;
+    gap: 8px;
+}
+
+.aiz-card-box .fs-14.d-flex .disc-amount del {
+    font-size: 12.5px;
+}
+
+.aiz-card-box .fs-14.d-flex span.fw-700 {
+    font-size: 15px;
+}
+
+/* =========================================================================
    Mobile app-style redesign (Daraz-inspired): colored header, category
    strip, flat bottom nav, smoother drawer.
    =========================================================================
