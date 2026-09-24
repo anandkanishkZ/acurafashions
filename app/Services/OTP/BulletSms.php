@@ -111,14 +111,18 @@ class BulletSms implements SendSms
 
         $decoded = json_decode($response, true);
 
-        if ($httpCode < 200 || $httpCode >= 300 || !is_array($decoded) || !array_key_exists('balance', $decoded)) {
+        // Bullet SMS wraps successful responses as {"success":true,"data":{"balance":..,"unit":".."},...},
+        // matching the same envelope /sms/send uses — not a bare {"balance":..} at the top level.
+        $data = $decoded['data'] ?? null;
+
+        if ($httpCode < 200 || $httpCode >= 300 || empty($decoded['success']) || !is_array($data) || !array_key_exists('balance', $data)) {
             $message = $decoded['message'] ?? ('HTTP ' . $httpCode);
             throw new \RuntimeException('Bullet SMS error: ' . $message);
         }
 
         return [
-            'balance' => $decoded['balance'],
-            'unit' => $decoded['unit'] ?? 'SMS',
+            'balance' => $data['balance'],
+            'unit' => $data['unit'] ?? 'SMS',
         ];
     }
 }
