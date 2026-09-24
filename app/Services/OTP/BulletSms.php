@@ -7,6 +7,26 @@ use Illuminate\Support\Str;
 
 class BulletSms implements SendSms
 {
+    /**
+     * Bullet SMS tokens can be domain-restricted; a bare server-to-server
+     * call with no Origin/Referer is rejected even from an allowed IP
+     * ("Request domain not whitelisted for this token"). Send both headers
+     * set to this site's own URL so a domain-restricted token still works.
+     */
+    protected function originHeaders()
+    {
+        $origin = rtrim(env('APP_URL', get_setting('site_domain', '')), '/');
+
+        if (empty($origin)) {
+            return [];
+        }
+
+        return [
+            'Origin: ' . $origin,
+            'Referer: ' . $origin . '/',
+        ];
+    }
+
     public function send($to, $from, $text, $template_id)
     {
         $token = otp_secret_setting('bullet_sms_token');
@@ -29,11 +49,11 @@ class BulletSms implements SendSms
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array_merge([
             'Authorization: Bearer ' . $token,
             'Content-Type: application/json',
             'Idempotency-Key: ' . (string) Str::uuid(),
-        ]);
+        ], $this->originHeaders()));
 
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -75,10 +95,10 @@ class BulletSms implements SendSms
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPGET, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array_merge([
             'Authorization: Bearer ' . $token,
             'Content-Type: application/json',
-        ]);
+        ], $this->originHeaders()));
 
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
