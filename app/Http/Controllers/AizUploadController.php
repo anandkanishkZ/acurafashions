@@ -150,6 +150,7 @@ class AizUploadController extends Controller
                     if (get_setting('uploaded_image_format') != "default") {
                         $extension = get_setting('uploaded_image_format');
                     }
+                    $processingFailed = false;
                     try {
                         $path = 'uploads/all/'. Str::random(40) . '.' .$extension;
                         $img = Image::make($request->file('aiz_file')->getRealPath())->encode($extension, 75);
@@ -234,8 +235,21 @@ class AizUploadController extends Controller
                         $img->save(base_path('public/') . $path);
                         clearstatcache();
                         $size = $img->filesize();
-                    } catch (\Exception $e) {
-                        //dd($e);
+                    } catch (\Throwable $e) {
+                        \Log::error('AizUploadController: image processing failed for upload', [
+                            'original_name' => $request->file('aiz_file')->getClientOriginalName(),
+                            'extension' => $extension,
+                            'error' => $e->getMessage(),
+                        ]);
+                        $processingFailed = true;
+                    }
+
+                    // Never save an Upload row for a file that didn't make it to disk (causes 404s in the media picker).
+                    if ($processingFailed || !isset($path) || !file_exists(base_path('public/') . $path)) {
+                        return response()->json([
+                            'error' => 1,
+                            'message' => translate('Could not process this image. Please try a different file.'),
+                        ], 422);
                     }
                 }else{
                     $path = $request->file('aiz_file')->store('uploads/all', 'local');

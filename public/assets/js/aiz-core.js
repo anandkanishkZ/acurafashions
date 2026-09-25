@@ -287,13 +287,17 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
             });
         },
         searchUploaderFiles: function () {
+            var searchDebounceTimer = null;
             $('[name="aiz-uploader-search"]').on("keyup", function () {
                 var value = $(this).val();
-                AIZ.uploader.getAllUploads(
-                    AIZ.data.appUrl + "/aiz-uploader/get-uploaded-files",
-                    value,
-                    $('[name="aiz-uploader-sort"]').val()
-                );
+                clearTimeout(searchDebounceTimer);
+                searchDebounceTimer = setTimeout(function () {
+                    AIZ.uploader.getAllUploads(
+                        AIZ.data.appUrl + "/aiz-uploader/get-uploaded-files",
+                        value,
+                        $('[name="aiz-uploader-sort"]').val()
+                    );
+                }, 350);
                 // if (AIZ.uploader.data.allFiles.length > 0) {
                 //     for (
                 //         var i = 0;
@@ -390,14 +394,8 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
             }
         },
         updateUploaderFiles: function () {
-            $(".aiz-uploader-all").html(
-                '<div class="align-items-center d-flex h-100 justify-content-center w-100"><div class="spinner-border" role="status"></div></div>'
-            );
-
             var data = AIZ.uploader.data.allFiles;
-
-            setTimeout(function () {
-                $(".aiz-uploader-all").html(null);
+            $(".aiz-uploader-all").html(null);
 
                 if (data.length > 0) {
                     for (var i = 0; i < data.length; i++) {
@@ -471,9 +469,8 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                         '<div class="align-items-center d-flex h-100 justify-content-center w-100 nav-tabs"><div class="text-center"><h3>No files found</h3></div></div>'
                     );
                 }
-                AIZ.uploader.uploadSelect();
-                AIZ.uploader.deleteUploaderFile();
-            }, 300);
+            AIZ.uploader.uploadSelect();
+            AIZ.uploader.deleteUploaderFile();
         },
         inputSelectPreviewGenerate: function (elem) {
             elem.find(".selected-files").val(AIZ.uploader.data.selectedFiles);
@@ -1231,6 +1228,14 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                     AIZ.uploader.getAllUploads(
                         AIZ.data.appUrl + "/aiz-uploader/get-uploaded-files"
                     );
+                });
+                uppy.on("upload-error", function (file, error, response) {
+                    var message =
+                        (response && response.body && response.body.message) ||
+                        "Could not upload this file. Please try again.";
+                    if (typeof AIZ !== "undefined" && AIZ.plugins && AIZ.plugins.notify) {
+                        AIZ.plugins.notify("danger", message);
+                    }
                 });
             }
         },
