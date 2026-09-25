@@ -110,6 +110,12 @@
             }
         });
 
+        // intlTelInput wraps #phone-code in its own .iti container with a
+        // flag/dial-code dropdown on the left, which visually collides with
+        // our own left-side phone icon (CSS hides it via :has(), but that's
+        // unsupported on some older browsers, so belt-and-suspenders here).
+        $(input).closest('.auth-input-group').find('.auth-input-icon').hide();
+
         var country = iti.getSelectedCountryData();
         $('input[name=country_code]').val(country.dialCode);
 

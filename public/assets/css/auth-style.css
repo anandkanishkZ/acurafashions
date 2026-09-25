@@ -342,6 +342,37 @@
     z-index: 2;
 }
 
+/* intlTelInput (phone field with country flag/dial-code) — the vendor
+   plugin wraps the <input> in a .iti container that defaults to
+   inline-block with no explicit width, so it doesn't fill
+   .auth-input-group the way a plain <input> does. Left unstyled, the
+   flag dropdown and our own left-side icon collide, and the field's
+   real rendered height falls out of sync with its label/siblings,
+   causing the next form-group to visually overlap it. Force the
+   plugin to behave like a normal full-width input, and hide our own
+   icon since the flag already marks this as a phone field. */
+.auth-input-group .iti {
+    display: block;
+    width: 100%;
+}
+
+.auth-input-group:has(.iti) > .auth-input-icon {
+    display: none;
+}
+
+.auth-input-group .iti input.form-control {
+    padding-left: 90px;
+}
+
+.auth-input-group .iti__flag-container {
+    z-index: 3;
+}
+
+.auth-input-group .iti__selected-flag {
+    padding: 0 8px 0 14px;
+    border-radius: 14px 0 0 14px;
+}
+
 .auth-input-group .form-control {
     height: 50px;
     border-radius: 14px !important;
