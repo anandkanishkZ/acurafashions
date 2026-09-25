@@ -626,6 +626,13 @@ class HomeController extends Controller
 
         $product_stock = $product->stocks->where('variant', $str)->first();
 
+        if ($product_stock === null) {
+            return response()->json([
+                'error' => 1,
+                'message' => translate('This combination is currently unavailable. Please choose a different option.'),
+            ], 422);
+        }
+
         $price = $product_stock->price;
 
 

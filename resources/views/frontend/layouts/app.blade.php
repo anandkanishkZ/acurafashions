@@ -716,6 +716,10 @@
                         }
 
                         AIZ.extra.plusMinus();
+                    },
+                    error: function(xhr){
+                        var message = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : "{{ translate('Something went wrong. Please try a different option.') }}";
+                        AIZ.plugins.notify('danger', message);
                     }
                 });
             }
@@ -759,6 +763,11 @@
                        AIZ.extra.plusMinus();
                        AIZ.plugins.slickCarousel();
                        updateNavCart(data.nav_cart_view,data.cart_count);
+                    },
+                    error: function(){
+                        $('.c-preloader').hide();
+                        $('#addToCart').modal('hide');
+                        AIZ.plugins.notify('danger', "{{ translate('Something went wrong. Please try again.') }}");
                     }
                 });
 
@@ -799,6 +808,11 @@
                             $('#modal-size').removeClass('modal-lg');
                             $('#addToCart-modal-body').html(data.modal_view);
                         }
+                    },
+                    error: function(){
+                        $('.c-preloader').hide();
+                        $('#addToCart').modal('hide');
+                        AIZ.plugins.notify('danger', "{{ translate('Something went wrong. Please try again.') }}");
                     }
                });
             }

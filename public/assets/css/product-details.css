@@ -865,7 +865,7 @@
     .pd-sticky-cta {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
         position: fixed;
         left: 0;
         right: 0;
@@ -879,6 +879,8 @@
         box-shadow: 0 -6px 24px rgba(17, 24, 39, 0.08);
         transform: translateY(0);
         transition: transform 0.3s var(--pd-ease);
+        max-width: 100vw;
+        overflow: hidden;
     }
 
     .pd-sticky-cta.is-hidden {
@@ -886,33 +888,54 @@
     }
 
     .pd-sticky-price {
-        flex: 0 0 auto;
+        /* Was flex: 0 0 auto with nowrap text -- a variant price range
+           ("$15.00 - $31.98") could claim unlimited width and push both
+           buttons off the right edge of the screen. Let it shrink and
+           truncate instead of forcing the row wider than the viewport. */
+        flex: 1 1 auto;
         display: flex;
         flex-direction: column;
         line-height: 1.15;
         min-width: 0;
+        max-width: 34vw;
         padding-right: 4px;
     }
 
     .pd-sticky-price small {
         font-size: 11px;
         color: var(--pd-muted);
-    }
-
-    .pd-sticky-price strong {
-        font-size: 17px;
-        font-weight: 800;
-        color: var(--primary);
         white-space: nowrap;
     }
 
+    .pd-sticky-price strong {
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--primary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: block;
+    }
+
     .pd-sticky-cta .pd-btn {
+        flex: 1 1 0;
+        min-width: 0;
         height: 46px;
-        font-size: 14px;
+        font-size: 13px;
+        padding-left: 8px;
+        padding-right: 8px;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .pd-sticky-cta .pd-btn span,
+    .pd-sticky-cta .pd-btn {
+        text-overflow: ellipsis;
     }
 
     .pd-sticky-cta .pd-btn i {
-        font-size: 18px;
+        font-size: 16px;
+        flex-shrink: 0;
     }
 
     /* The product page swaps the app bottom nav for the buy bar */
