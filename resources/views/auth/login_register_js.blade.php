@@ -105,6 +105,11 @@
             utilsScript: "{{ static_asset('assets/js/intlTelutils.js') }}?1590403638580",
             onlyCountries: ['np'],
             initialCountry: 'np',
+            // Nepal is the only option, so the flag dropdown has nothing to
+            // offer besides re-selecting the same country -- disable the
+            // click/dropdown entirely and keep the flag as a plain,
+            // non-interactive indicator instead of a dead-end control.
+            allowDropdown: false,
             customPlaceholder: function(selectedCountryPlaceholder, selectedCountryData) {
                 return "98xxxxxxxx";
             }
