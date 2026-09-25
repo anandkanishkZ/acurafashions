@@ -38,6 +38,8 @@ jobs:
             # Host disables proc_open, which Composer needs to run scripts; run the post-autoload step directly.
             composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=php --no-scripts
             php artisan package:discover --ansi
+            # Path package is copied (not symlinked) into vendor and composer won't refresh it while the lock is unchanged.
+            cp -r packages/mehedi-iitdu/core-component-repository/src/. vendor/mehedi-iitdu/core-component-repository/src/
 
             echo '--- Clearing and rebuilding caches ---'
             php artisan optimize:clear

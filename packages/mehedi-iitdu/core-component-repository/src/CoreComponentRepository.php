@@ -44,8 +44,14 @@ class CoreComponentRepository
         }
     }
 
+    // Built in-house for this site, not purchased, so they have no purchase code to verify.
+    protected static $inHouseAddons = ['otp_system', 'offline_payment'];
+
     public static function initializeCache() {
         foreach(Addon::all() as $addon){
+            if (in_array($addon->unique_identifier, self::$inHouseAddons)) {
+                continue;
+            }
             if ($addon->purchase_code == null) {
                 self::finalizeCache($addon);
             }
