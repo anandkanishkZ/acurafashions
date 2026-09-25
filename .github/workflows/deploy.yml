@@ -35,7 +35,9 @@ jobs:
             git reset --hard origin/main
 
             echo '--- Installing dependencies ---'
-            composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=php
+            # Host disables proc_open, which Composer needs to run scripts; run the post-autoload step directly.
+            composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=php --no-scripts
+            php artisan package:discover --ansi
 
             echo '--- Clearing and rebuilding caches ---'
             php artisan optimize:clear
