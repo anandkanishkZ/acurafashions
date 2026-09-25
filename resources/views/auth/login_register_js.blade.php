@@ -65,26 +65,48 @@
 @if (addon_is_activated('otp_system'))
     <script type="text/javascript">
         // Country Code
+        //
+        // OTP delivery currently only supports Bullet SMS, which only ever
+        // delivers to Nepal mobile numbers (see is_nepal_mobile_number() /
+        // normalize_nepal_mobile_number() in app/Http/Helpers.php). Letting
+        // the phone field accept any active country was misleading: a user
+        // could pick e.g. India or the US, submit a number, and their OTP
+        // would silently never arrive since Bullet SMS rejects it.
+        //
+        // Locked to Nepal only for now. If a multi-country SMS gateway is
+        // added later, restore the commented-out onlyCountries block below
+        // (driven by get_active_countries()) instead of this hardcoded list.
         var isPhoneShown = true,
-            countryData = window.intlTelInputGlobals.getCountryData(),
             input = document.querySelector("#phone-code");
 
-        for (var i = 0; i < countryData.length; i++) {
-            var country = countryData[i];
-            if (country.iso2 == 'bd') {
-                country.dialCode = '88';
-            }
-        }
+        // ---- Previous multi-country configuration (kept for later use) ----
+        // var countryData = window.intlTelInputGlobals.getCountryData();
+        // for (var i = 0; i < countryData.length; i++) {
+        //     var country = countryData[i];
+        //     if (country.iso2 == 'bd') {
+        //         country.dialCode = '88';
+        //     }
+        // }
+        // var iti = intlTelInput(input, {
+        //     separateDialCode: true,
+        //     utilsScript: "{{ static_asset('assets/js/intlTelutils.js') }}?1590403638580",
+        //     onlyCountries: @php echo get_active_countries()->pluck('code') @endphp,
+        //     customPlaceholder: function(selectedCountryPlaceholder, selectedCountryData) {
+        //         if (selectedCountryData.iso2 == 'bd') {
+        //             return "01xxxxxxxxx";
+        //         }
+        //         return selectedCountryPlaceholder;
+        //     }
+        // });
+        // ---------------------------------------------------------------------
 
         var iti = intlTelInput(input, {
             separateDialCode: true,
             utilsScript: "{{ static_asset('assets/js/intlTelutils.js') }}?1590403638580",
-            onlyCountries: @php echo get_active_countries()->pluck('code') @endphp,
+            onlyCountries: ['np'],
+            initialCountry: 'np',
             customPlaceholder: function(selectedCountryPlaceholder, selectedCountryData) {
-                if (selectedCountryData.iso2 == 'bd') {
-                    return "01xxxxxxxxx";
-                }
-                return selectedCountryPlaceholder;
+                return "98xxxxxxxx";
             }
         });
 
